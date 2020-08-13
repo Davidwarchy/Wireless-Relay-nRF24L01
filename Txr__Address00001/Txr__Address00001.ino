@@ -14,11 +14,16 @@ radio.setPALevel(RF24_PA_LOW);
 }
 
 void loop(){
-const char text[] = "who!who!nettigo!is great";
+ //read analog & send value over via radio
+int value = analogRead(A0);
+float voltage  = value*(5.0/1023.0);
+char text[10];
+dtostrf(voltage,4,4,text)
+
 radio.write(&text, sizeof(text));                  //Sending the message to receiver
 digitalWrite(2,HIGH);
 delay(20);
-digitalWrite(2,LOW);
+digitalWrite(2,LOW);;
 
 delay(1000);
 }

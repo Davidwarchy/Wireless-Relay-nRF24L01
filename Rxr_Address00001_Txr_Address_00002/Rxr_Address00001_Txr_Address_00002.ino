@@ -5,6 +5,9 @@
 RF24 radio(7, 8); // CE, CSN
 const byte address1[6] = "00001";
 const byte address2[6] = "00002";
+float threshold = 2.5;
+float reading = 0;
+float command = 0;
 
 void setup() {
   while (!Serial);
@@ -26,16 +29,26 @@ void loop() {
       char text[32] = {0};                 //Saving the incoming data
       radio.read(&text, sizeof(text));    //Reading the data
       Serial.println(text);
+      reading = atof(text);
+        if(reading > threshold){
+          command = 0.0;  //1 for open
+          Serial.println("    value > threshold");
+        }else{
+          command = 1.0; //0 for close
+          Serial.println("    value < threshold");
+        }
 
       digitalWrite(2, HIGH);
       delay(20);
       digitalWrite(2, LOW); 
-      //---------------------------------------------------------start of modification
-      //send what we receive
-      radio.stopListening();
-      radio.write(&text, sizeof(text)); 
       
-      //---------------------------------------------------------end of modification    
+      //send command----------------------------------------------------------------------------
+      dtostrf(command,4,4,text);
+
+      radio.write(&text, sizeof(text));                  //Sending the message to receiver
+      radio.stopListening();
+      radio.write(&text, sizeof(text));   
+      //end sending command----------------------------------------------------------------------
       }
 
       //to detect that the loop is still alive in receiver
