@@ -44,7 +44,7 @@ void loop() {
       radio.read(&text, sizeof(text));    //Reading the data
       command = atoi(text);
       Serial.print("command received is : ");
-      Serial.println(command*5);
+      Serial.println(command);
       
       digitalWrite(2, HIGH);
       delay(20);
