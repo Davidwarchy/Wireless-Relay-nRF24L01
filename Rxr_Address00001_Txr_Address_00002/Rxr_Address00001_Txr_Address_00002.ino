@@ -5,6 +5,7 @@
 #include <Keypad.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <avr/wdt.h>
 
 //keypad variables
 const byte ROWS = 4; //four rows
@@ -43,6 +44,7 @@ void display_norm(){
   lcd.print(instruction);
 }
 void setup() {
+  wdt_enable(WDTO_8S);
   pinMode(A0, OUTPUT);
   pinMode(A1, OUTPUT);
   
@@ -110,6 +112,7 @@ void loop() {
       reading = atof(text);
       Serial.println("Reading :");
       Serial.println(reading);
+      display_norm();
         if(reading > threshold){
           command = 0.0;  //0 for close
         }else{
@@ -135,5 +138,5 @@ void loop() {
       digitalWrite(A1, HIGH);   
       delay(100);
       digitalWrite(A1, LOW); 
-
+      wdt_reset();
 }
